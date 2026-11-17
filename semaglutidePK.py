@@ -117,13 +117,24 @@ def simulate(Favailable, ka, D, n_doses, interval, dt):
 #     return t, Asc_out, Cc_nM
 
 # --- run ---
-t, Asc, Cc = simulate(D, n_doses, interval, dt)
+
 results = {}
-for drug, p in products.items():
-    t, Asc, Cc = simulate(p['Favailable'], p['ka'], p['D'], p['n_doses'], p['interval'], dt)
-    results[drug] = (t, Asc, Cc)
-    last = t >= t[-1] - p['interval']            # final dosing interval ~ steady state
-    print(f"{drug:24s} free Cc over last interval: mean {np.mean(Ffree*Cc[last]):.3f} nM "
+
+for drug_name, p in products.items():
+    t, Asc, Cc = simulate(
+        p['Favailable'],
+        p['ka'],
+        p['D'],
+        p['n_doses'],
+        p['interval'],
+        dt
+    )
+
+    results[drug_name] = (t, Asc, Cc)
+
+    last = t >= t[-1] - p['interval']
+
+    print(f"{drug_name:24s} free Cc over last interval: mean {np.mean(Ffree*Cc[last]):.3f} nM "
           f"(min {np.min(Ffree*Cc[last]):.3f}, max {np.max(Ffree*Cc[last]):.3f})")
  
 # --- Figure 1: Ozempic vs Wegovy ---
